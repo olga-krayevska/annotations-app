@@ -1,4 +1,6 @@
 export interface DocumentModel {
-    document: string;
+    id: string;
+    name: string;
+    text: string;
     annotation: string;
 }

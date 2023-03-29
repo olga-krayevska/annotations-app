@@ -1,0 +1,13 @@
+.document-wrapper {
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+
+    .text {
+        width: 500px;
+        margin: 30px auto;
+    }
+}
