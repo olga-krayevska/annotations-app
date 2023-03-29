@@ -1,0 +1,16 @@
+
+:host {
+    margin-top: auto;
+
+    .footer-wrapper {
+        height: 10vh;
+        background-color: aquamarine;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .footer-info {
+            width: fit-content;
+        }
+    }
+}
