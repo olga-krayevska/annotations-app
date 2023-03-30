@@ -27,7 +27,8 @@ export class AnnotationsComponent {
   pages: string[] = [];
   currentPage = 1;
   tableData: Annotation[] = [];
-  displayedColumns = ['id', 'text', 'x', 'y', 'page']
+  displayedColumns = ['id', 'text', 'x', 'y', 'page'];
+  image: any = undefined;
 
   ngOnInit() {
     this.subscription.add(this.route.params.subscribe(params => {
@@ -43,13 +44,20 @@ export class AnnotationsComponent {
   }
 
   getDocument(id: string): void {
+    debugger;
     this.subscription.add(this.store.select(fromRoot.getDocumentById(id)).subscribe(
       document => {
         if(document[0]){
+          debugger;
           this.document = document[0];
           this.pages = this.dataService.splitDocumentOnPages(document[0].text);
           if(this.document?.annotations) {
             this.tableData = this.document?.annotations;
+          }
+          debugger;
+          if(this.document?.image) {
+            this.image = this.document?.image;
+            console.log("this.image ", this.image)
           }
         }        
       }

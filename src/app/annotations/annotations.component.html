@@ -43,7 +43,7 @@
     
     <div class="image">
         <h2>Image</h2>
-        <div *ngIf="document?.image; else noImage">{{ document?.image }}</div>
+        <div *ngIf="image; else noImage">{{ image.name }}</div>
         <ng-template #noImage><h3>There is no image for this document</h3></ng-template>
     </div>
 
