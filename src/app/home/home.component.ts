@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private store: Store, private router: Router) { }
 
-  displayedColumns = ['name', 'annotation']
+  displayedColumns = ['name']
   tableData: DocumentModel[] = [];
 
   documents$: Observable<DocumentModel[]> = this.store.select(fromRoot.getDocuments);
@@ -27,7 +27,4 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/document', document.id]);
   }
 
-  navigateToAnnotations(document: DocumentModel):void {
-    this.router.navigate(['/annotations', document.id]);
-  }
-}
+}  

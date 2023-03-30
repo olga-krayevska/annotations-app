@@ -2,3 +2,11 @@
     width: 40vw;
     margin: 30px auto;
 }
+
+.link {
+    cursor: pointer;
+
+    &:hover {
+        color: blue;
+    }
+}
