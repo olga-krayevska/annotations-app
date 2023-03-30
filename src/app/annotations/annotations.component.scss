@@ -1,0 +1,31 @@
+.document-wrapper {
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+
+    .buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .text {
+        width: 500px;
+        margin: 30px auto;
+        position: relative;       
+    }    
+
+    .table {
+        width: 40vw;
+        margin: 0 auto;
+    }
+
+    .image {
+        align-items: center;
+        flex-direction: column;
+        display: flex;
+        justify-content: center;
+    }
+}
