@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { Annotation, DocumentModel } from '../models/data-interface';
-import { DataService } from '../services/data.service';
+import { AnnotationModel, DocumentModel, PageModel } from '../models/data-interface';
 import * as fromRoot from '../store/data.selectors'
 
 @Component({
@@ -18,17 +16,13 @@ export class AnnotationsComponent {
     private route: ActivatedRoute,
     private router: Router,
     private store: Store,
-    private dataService: DataService,
   ) {}
 
   docId: string | undefined;
-  document: DocumentModel | undefined;
   subscription: Subscription = new Subscription();
-  pages: string[] = [];
-  currentPage = 1;
-  tableData: Annotation[] = [];
-  displayedColumns = ['id', 'text', 'x', 'y', 'page'];
-  image: any = undefined;
+  pages: PageModel[] = [];
+  annotations: AnnotationModel[] = [];
+  displayedColumns = ['type', 'text', 'image', 'x', 'y', 'page'];
 
   ngOnInit() {
     this.subscription.add(this.route.params.subscribe(params => {
@@ -46,22 +40,15 @@ export class AnnotationsComponent {
   getDocument(id: string): void {
     this.subscription.add(this.store.select(fromRoot.getDocumentById(id)).subscribe(
       document => {
-        if(document[0]){
-          this.document = document[0];
-          this.pages = this.dataService.splitDocumentOnPages(document[0].text);
-          if(this.document?.annotations) {
-            this.tableData = this.document?.annotations;
-          }
-          if(this.document?.image) {
-            this.image = this.document?.image;
+        if(document){
+          this.pages = document.pages;
+
+          if(document.annotations) {
+            this.annotations = document.annotations;
           }
         }        
       }
     ));
-  }
-
-  onPageChange(event: PageEvent): void {
-    this.currentPage = event.pageIndex + 1;
   }
 
   goHome(): void {

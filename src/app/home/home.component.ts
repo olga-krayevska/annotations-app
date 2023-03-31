@@ -20,7 +20,9 @@ export class HomeComponent implements OnInit {
   documents$: Observable<DocumentModel[]> = this.store.select(fromRoot.getDocuments);
 
   ngOnInit():void {
-    this.documents$.subscribe(data => this.tableData = data)
+    this.documents$.subscribe(data => { 
+      this.tableData = data
+    })
   }
 
   navigateToDocument(document: DocumentModel):void {

@@ -1,14 +1,20 @@
+
 export interface DocumentModel {
     id: string;
     name: string;
-    text: string;
-    annotations: Annotation[];
-    image?: File;
+    pages: PageModel[];
+    annotations: AnnotationModel[];
 }
 
-export interface Annotation {
+export interface PageModel {
+    src: string;
+}
+
+export interface AnnotationModel {
     id: string;
-    text: string;
+    type: 'text' | 'image'
+    text?: string;
+    image?: string;
     page: number;
     x: number;
     y: number;

@@ -1,12 +1,11 @@
 import { OnDestroy } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { Annotation, DocumentModel } from '../models/data-interface';
+import { AnnotationModel, PageModel } from '../models/data-interface';
 import * as fromRoot from '../store/data.selectors'
-import { appActions } from '../store/data.actions';
+import { docsActions } from '../store/data.actions';
 import { MatDialog } from '@angular/material/dialog';
 import { AnnotationModalComponent } from '../annotation-modal/annotation-modal.component';
 
@@ -24,18 +23,14 @@ export class DocumentComponent implements OnInit, OnDestroy {
     private dialog: MatDialog
   ) {}
 
-  document: DocumentModel | undefined;
+  document: any;
   subscription: Subscription = new Subscription();
-  pages: string[] = [];
-  currentPage = 1;
-  annotation = false;
-  draged: string = '';
-  annotations: Annotation[] = [];
+  annotations: AnnotationModel[] = [];
   scaleFactor = 1;
-  file: any = undefined;
+  pages: PageModel[] = [];
+  startPos = { x: 0, y: 0 };
   
   ngOnInit(): void {
-    this.store.dispatch(appActions.loadDocuments());
     this.subscription.add(this.route.params.subscribe(params => {
       if(params['id']) {
         const id = params['id'];
@@ -51,68 +46,66 @@ export class DocumentComponent implements OnInit, OnDestroy {
   getDocument(id: string): void {
     this.subscription.add(this.store.select(fromRoot.getDocumentById(id)).subscribe(
       document => {
-        if(document[0]){
-          this.document = document[0];
-          this.splitDocumentOnPages(document[0].text);
+        if(document){
+          this.document = document;
+          this.pages = document.pages;
+          this.annotations = [...document.annotations];
         }        
       }
     ));
-  }
-
-  splitDocumentOnPages(text: string): void {
-    const pages = [];
-    const pageSize = 500;
-    for(let i = 0; i < text.length; i += pageSize) {
-      pages.push(text.slice(i, i + pageSize))
-    }
-   this.pages = pages;
-  }
-
-  onPageChange(event: PageEvent): void {
-    this.currentPage = event.pageIndex + 1;
-  }
+  } 
 
   goHome(): void {
     this.router.navigate(['']);
   }
 
-  handleClick(event: MouseEvent): void {
-    this.dialog.open(AnnotationModalComponent, { width: "500px"})
+  handleClick(event: MouseEvent, page: number): void {
+    this.dialog.open(AnnotationModalComponent)
       .afterClosed().subscribe(data => {
-        const annotation: Annotation = {
+
+        const annotation: AnnotationModel = {
           id: new Date().toString(),
-          text: data.annotation,
-          page: this.currentPage,
+          type: data.image ? 'image' : 'text',
+          page: page + 1,
           x: event.offsetX,
           y: event.offsetY
         }
-        if(data.image){
-          this.file = data.image;
+
+        if (data.image){
+          this.convertFileToBase64(data.image).then(base64Img => {
+            annotation.image = base64Img;
+            this.annotations.push(annotation);
+          })
+        } else {
+          annotation.text = data.annotation;
+          this.annotations.push(annotation);
         }
-        this.annotations.push(annotation);
-      })     
+    })
   }
 
-  pageAnnotations(): Annotation[] {
-    return this.annotations.filter(annotation => annotation.page === this.currentPage);
+  convertFileToBase64(file:any): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+    });
+  }
+
+  filteredAnnotations(page: number): AnnotationModel[] {
+    return this.annotations.filter(annotation => annotation.page === page)
   }
 
   save(): void {
     if(this.document?.id) {
-      this.store.dispatch(appActions.saveAnnotations({ id: this.document?.id, annotations: this.annotations }));
-        if(this.file) {
-          this.store.dispatch(appActions.addImage({ id: this.document?.id, image: this.file }))
-        }
-      } 
-    this.router.navigate(['/annotations', this.document?.id]); 
+      this.store.dispatch(docsActions.saveAnnotations({ id: this.document?.id, annotations: this.annotations }));
+      this.router.navigate(['/annotations', this.document?.id]); 
+    }      
+    
   }
 
-  removeAnnotation(annotation: Annotation): void {
-    this.annotations = this.annotations.filter(a => a.id !== annotation.id)
-  }
-
-  removeFile(): void {
-    this.file = undefined;
+  removeAnnotation(annotationId: string): void {
+    this.annotations = this.annotations.filter(annotation => annotation.id !== annotationId)
   }
 
   zoomIn(): void {
@@ -126,5 +119,32 @@ export class DocumentComponent implements OnInit, OnDestroy {
   goToNormalScale(): void {
     this.scaleFactor = 1;
   }
+
+  updateAnnotation({id, x, y}: {id: string; x: number; y: number }): void {
+    let annotation = this.annotations.find(annotation => annotation.id === id);
+    if(annotation) {
+      annotation.x = x;
+      annotation.y = y;
+    }
+  }
+
+  onDragStart (event: MouseEvent): void {
+    this.startPos.x = event.clientX;
+    this.startPos.y = event.clientY;
+  };
+
+  onDragEnd (event: DragEvent, id: string): void {
+  const endPos = { x: 0, y: 0 };
+    endPos.x = event.clientX;
+    endPos.y = event.clientY;
+    const deltaX = endPos.x - this.startPos.x;
+    const deltaY = endPos.y - this.startPos.y;
+    
+    const square = event.target as HTMLElement
+    const currentTop = square.offsetTop;
+    const currentLeft = square.offsetLeft;
+        
+    this.updateAnnotation({id,  x: currentLeft + deltaX, y: currentTop + deltaY })
+  };
 }
 

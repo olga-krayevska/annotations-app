@@ -8,16 +8,22 @@
         </button>
     </div>
     <h2>Annotations </h2>
-    <div class="table" *ngIf="document?.annotations?.length; else noAnnotations">
-        <table mat-table [dataSource]="tableData" >
-            <ng-container matColumnDef="id">
-                <th mat-header-cell *matHeaderCellDef> id </th>
-                <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+    <div class="table" *ngIf="annotations.length; else noAnnotations">
+        <table mat-table [dataSource]="annotations" >
+            
+            <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef> type </th>
+                <td mat-cell *matCellDef="let element">{{ element.type }}</td>
             </ng-container>
-    
+                
             <ng-container matColumnDef="text">
                 <th mat-header-cell *matHeaderCellDef> text </th>
                 <td mat-cell *matCellDef="let element">{{ element.text }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="image">
+                <th mat-header-cell *matHeaderCellDef> image </th>
+                <td mat-cell *matCellDef="let element"><img class="image" src="{{ element.image }}" alt=""></td>
             </ng-container>
         
             <ng-container matColumnDef="x">
@@ -40,23 +46,12 @@
         </table>        
     </div>
     <ng-template #noAnnotations><h3>There are no annotations for this document</h3></ng-template>
-    
-    <div class="image">
-        <h2>Image</h2>
-        <div *ngIf="image; else noImage">{{ image.name }}</div>
-        <ng-template #noImage><h3>There is no image for this document</h3></ng-template>
-    </div>
+       
 
-    <mat-paginator 
-        [length]="pages.length" 
-        [pageSize]="1" 
-        [pageSizeOptions]="[1]"
-        (page)="onPageChange($event)">
-    </mat-paginator>
-    
-    <span class="text">
-        <div *ngFor="let page of pages | paginate: { itemsPerPage: 1, currentPage: currentPage }"> 
-            {{ page }}
+    <div class="page" *ngFor="let page of pages; let i = index">
+        <div class="page-wrapper">
+            <img src="{{ page.src }}">
         </div>
-    </span> 
+    </div>
+    
 </div>

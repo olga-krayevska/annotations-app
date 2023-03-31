@@ -13,12 +13,37 @@ export class AnnotationModalComponent {
     private dialogRef: MatDialogRef<AnnotationModalComponent>,
     private fb: FormBuilder) {}
 
-  form: FormGroup = this.fb.group({
+  inputTextOpened = false;
+  inputImageOpened = false;
+  file: any = null;
+
+  textForm: FormGroup = this.fb.group({
     annotation: ['', Validators.required],
-    image: [null]
   });
 
-  submit(): void {
-    this.dialogRef.close(this.form.value);
+  imageForm: FormGroup = this.fb.group({
+    image: [null, Validators.required],
+  });
+
+  openTextInput(): void {
+    this.inputTextOpened = true;
+    this.inputImageOpened = false;
+  }
+
+  openImageInput(): void {
+    this.inputImageOpened = true;
+    this.inputTextOpened = false;
+  }
+
+  onFileSelected(event: any): void {
+    this.file = event.target.files[0];
+  }
+  
+  submitText(): void {
+    this.dialogRef.close(this.textForm.value);
+  }
+
+  submitImage(): void {
+    this.dialogRef.close({ image: this.file} );
   }
 }

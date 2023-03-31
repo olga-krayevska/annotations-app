@@ -1,11 +1,13 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { DocumentModel } from "../models/data-interface";
-import { AppState, appStateKey } from "./data.reducer";
+import { DocumentModel, PageModel } from "../models/data-interface";
+import { DocsState, docsStateKey } from "./data.reducer";
 
-const appSelector = createFeatureSelector<AppState>(appStateKey);
+const appSelector = createFeatureSelector<DocsState>(docsStateKey);
 
-export const getDocuments = createSelector(appSelector, (state) => state.documents);
+export const getDocuments = createSelector(appSelector, (state) => {return state.data});
+
 export const getDocumentById = (id: string) => createSelector(appSelector, (state) => {
-    return state.documents.filter((doc: DocumentModel) => doc.id === id);
+    return state.data.find((doc: DocumentModel) => doc.id === id);
 });
+
 

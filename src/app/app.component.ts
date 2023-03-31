@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { appActions } from './store/data.actions';
-import { AppState } from './store/data.reducer';
+import { AppState } from './store/app.reducer';
+import { docsActions } from './store/data.actions';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +15,6 @@ export class AppComponent implements OnInit {
   title = 'annotations-app';
 
   ngOnInit(): void {
-    this.store.dispatch(appActions.loadDocuments());
+     this.store.dispatch(docsActions.loadDocument());
   }
 }

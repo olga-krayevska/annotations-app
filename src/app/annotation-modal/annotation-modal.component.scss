@@ -1,13 +1,28 @@
 .modal-wrapper {
-    padding: 50px;
+    padding: 20px;
+    .type-choice {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        button {
+            width: 100px;
+        }
+    }
+    
     .form {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 30px;
+        margin-top: 20px;
 
         mat-form-field {
             width: 100%;
+        }
+
+        .image-input {
+            margin-bottom: 20px;
+            width: 80%;
         }
       }     
       

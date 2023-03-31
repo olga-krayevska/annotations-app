@@ -1,11 +1,10 @@
 import { createAction, props } from '@ngrx/store';
-import { Annotation, DocumentModel } from '../models/data-interface';
+import { AnnotationModel, DocumentModel, PageModel } from '../models/data-interface';
 
-export namespace appActions {
-    export const loadDocuments = createAction(`Load Documents`);
-    export const loadDocumentsSuccess = createAction(`Load Documents Success`, props<{ documents: DocumentModel[] }>());
-    export const loadDocumentsFailure = createAction(`Load Documents Failure`);
+export namespace docsActions {
+    export const loadDocument = createAction(`Load Document`);
+    export const loadDocumentSuccess = createAction(`Load Document Success`, props<{ documents: DocumentModel[] }>());
+    export const loadDocumentFailure = createAction(`Load Document Failure`);
 
-    export const saveAnnotations = createAction(`Add Annotation`, props<{ id: string; annotations: Annotation[] }>())
-    export const addImage = createAction(`Add Image`, props<{ id:string; image: File }>());
+    export const saveAnnotations = createAction(`Save Annotation`, props<{ id: string; annotations: AnnotationModel[] }>())
 }

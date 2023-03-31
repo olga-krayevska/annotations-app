@@ -1,42 +1,34 @@
-import { Action, ActionReducerMap, createReducer, on } from '@ngrx/store';
+import {  createReducer, on } from '@ngrx/store';
 import { DocumentModel } from '../models/data-interface';
-import { appActions } from './data.actions';
+import { docsActions } from './data.actions';
 
 
-export interface AppState {
-    documents: any;
+export interface DocsState {
+    data: DocumentModel[];
   }
 
-export const initialState: AppState = {
-    documents: []
+export const initialState: DocsState = {
+    data: []
 };
-export const appStateKey = 'documents';
 
-export const appReducer = createReducer(
+export const docsStateKey = 'documents';
+
+export const docsReducer = createReducer(
+
     initialState,
-    on(appActions.loadDocumentsSuccess, (state, { documents })  => {
-        return { ...state, documents }
+
+    on(docsActions.loadDocumentSuccess, (state, { documents })  => {
+        return { ...state, data: documents }
     }),
 
-    on(appActions.saveAnnotations, (state, { id, annotations })  => {
-        let documents = [...state.documents];
-        documents = documents.map((doc: DocumentModel) => {
-            if(doc.id === id) {
-                doc = { ...doc, annotations }
-            }
-            return doc;
-        })
-        return { ...state,  documents }
-    }),
-    on(appActions.addImage, (state, { id, image })  => {
-        let documents = [...state.documents];
-        documents = documents.map((doc: DocumentModel) => {
-            if(doc.id === id) {
-                doc = { ...doc, image }
-            }
-            return doc;
-        })
-        return { ...state,  documents }
-    }),   
+    on(docsActions.saveAnnotations, (state, { id, annotations })  => {
+        let documents = state.data.map(doc => {
+                if(doc.id === id) {
+                    return {...doc, annotations}
+                }
+                return doc; 
+            });
+        return { ...state,  data: documents }
+    })    
 )
 

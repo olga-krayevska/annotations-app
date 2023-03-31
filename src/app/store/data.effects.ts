@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { DataService } from "../services/data.service";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { appActions } from './data.actions' 
+import { docsActions } from './data.actions' 
 import { catchError, map, of, switchMap } from "rxjs";
 
 
@@ -14,13 +14,13 @@ export class AppEffect {
     ) {}
 
     loadDocuments$ = createEffect(() => this.actions$.pipe( 
-        ofType(appActions.loadDocuments),
+        ofType(docsActions.loadDocument),
         switchMap(() => this.dataService.getData().pipe(
             map((documents) => { 
-                return appActions.loadDocumentsSuccess({ documents })}),
+                return docsActions.loadDocumentSuccess({ documents })}),
             catchError(error => {
                 alert(`Documents have not been loaded`)
-                return of(appActions.loadDocumentsFailure());
+                return of(docsActions.loadDocumentFailure());
             }           
         ))                   
     )))   

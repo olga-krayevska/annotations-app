@@ -36,7 +36,7 @@ import { AnnotationModalComponent } from './annotation-modal/annotation-modal.co
     FooterComponent,
     DocumentComponent,
     AnnotationsComponent,
-    AnnotationModalComponent    
+    AnnotationModalComponent
   ],
   imports: [
     BrowserModule,
