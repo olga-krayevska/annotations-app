@@ -53,10 +53,10 @@ import { AnnotationModalComponent } from './annotation-modal/annotation-modal.co
     ReactiveFormsModule,
     NgxMatFileInputModule,
     BrowserAnimationsModule,
-    StoreDevtoolsModule,
     NgxPaginationModule,
     EffectsModule.forRoot([AppEffect]),
-    StoreModule.forRoot(appReducer)
+    StoreModule.forRoot(appReducer),
+    StoreDevtoolsModule.instrument()
   ],
   providers: [],
   bootstrap: [AppComponent]

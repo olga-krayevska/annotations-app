@@ -105,7 +105,8 @@ export class DocumentComponent implements OnInit, OnDestroy {
   }
 
   removeAnnotation(annotationId: string): void {
-    this.annotations = this.annotations.filter(annotation => annotation.id !== annotationId)
+    this.annotations = this.annotations.filter(annotation => annotation.id !== annotationId);
+    this.store.dispatch(docsActions.saveAnnotations({ id: this.document?.id, annotations: this.annotations }));
   }
 
   zoomIn(): void {
